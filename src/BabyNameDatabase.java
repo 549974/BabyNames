@@ -49,22 +49,59 @@ public class BabyNameDatabase {
          * @param year when the data is from
          */
         public void processLineFromBirthDataFile(String line, int year){
-            // TODO 3: Write the code below this line.
-            // use delimiter ^[a-zA-Z]+$ for only a-z
             //1	Jacob	"25,838"	Emily	"23,948"
-            // mut =Jacob"25,838"Emily"23,948"
+            //Jacob 25838    Emily	23948
             int count = 0;
+            int last = 0;
+            String name1 = null;
+            String name2 = null;
+            int pop1 = 0;
+            int pop2 = 0;
             Scanner input = new Scanner(line);
-            input.useDelimiter("\t");
             String li = input.nextInt() + "";
-            String mut = line.substring(li.length());
-            int name1;
+            line = line.replace("\"", "");
+            line = line.replace(",", "");
+            String mut = line.substring(li.length() + 1);
             for(int i = 0; i < mut.length(); i++) {
-                if(line.charAt(i) == '"' && count == 0) {
-                    name1 = i - 1;
+                if(line.charAt(i) == '\t' && count == 0) {
+                    name1 = mut.substring(0, i);
+                    last = i;
                     count++;
-                } if(line.charAt(i) == '"' && count == 1) {
-
+                }
+                if(line.charAt(i) == '\t' && count == 1) {
+                    pop1 = Integer.parseInt(mut.substring(last+1, i));
+                    last = i;
+                    count++;
+                }
+                if(line.charAt(i) == '\t' && count == 2) {
+                    name2 = mut.substring(last+1, i);
+                    last = i;
+                    count++;
+                }
+                if(count == 3) {
+                    pop2 = Integer.parseInt(mut.substring(last+1));
+                }
+            }
+            BabyName mEntry = new BabyName(name1, GenderOfName.MALE);
+            BabyName fEntry = new BabyName(name2, GenderOfName.FEMALE);
+            int maleMatch = 0; // 1 is name, 2 is both
+            int femaleMatch = 0; // 1 is name, 2 is both
+            for(BabyName test : records) {
+                if(mEntry.getName() == test.getName()) {
+                    maleMatch++;
+                    if(mEntry.getGender() == test.getGender()) {
+                        maleMatch++;
+                    } else {
+                        test.setGender(GenderOfName.NEUTRAL);
+                    }
+                }
+                if(fEntry.getName() == test.getName()) {
+                    femaleMatch++;
+                    if(fEntry.getGender() == test.getGender()) {
+                        femaleMatch++;
+                    } else {
+                        test.setGender(GenderOfName.NEUTRAL);
+                    }
                 }
             }
         }
