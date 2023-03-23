@@ -34,7 +34,6 @@ public class BabyName {
     }
     public void addData(int count, int year) {
         int index = 0;
-        int dist = 0;
         if(years.size() > 0) {
             int max = Collections.max(years);
             int min = Collections.min(years);
@@ -52,8 +51,6 @@ public class BabyName {
                     for(int y : years) {
                         if(y < year) {
                             index = years.indexOf(y) + 1;
-                        } else {
-                            continue;
                         }
                     } years.add(index, year);
                 }
@@ -67,6 +64,9 @@ public class BabyName {
         for(int i = 0; i < namesnum.size(); i++) {
             addData(namesnum.get(i), occur.get(i));
         }
+    }
+    public int index(int y) {
+        return years.indexOf(y);
     }
     /**
      * Formats the object as a String.

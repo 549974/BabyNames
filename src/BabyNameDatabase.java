@@ -28,10 +28,10 @@ public class BabyNameDatabase {
      */
     public void readRecordsFromBirthDataFile(String filename) throws IOException {
         // TODO 2: Write the code below this line.
-        fileRecord = new File(filename);
-        Scanner in = new Scanner(fileRecord);
-        String l = null;
-        String wrong = null;
+        File scan = new File(filename);
+        Scanner in = new Scanner(scan);
+        String l;
+        String wrong;
         int yer = Integer.parseInt(filename.substring(filename.length() - 8, filename.length() - 4));
         while (in.hasNext()) {
             if (in.hasNextInt()) {
@@ -84,25 +84,19 @@ public class BabyNameDatabase {
             }
             BabyName mEntry = new BabyName(name1, GenderOfName.MALE);
             BabyName fEntry = new BabyName(name2, GenderOfName.FEMALE);
-            int maleMatch = 0; // 1 is name, 2 is both
-            int femaleMatch = 0; // 1 is name, 2 is both
             for(BabyName test : records) {
                 if(mEntry.getName() == test.getName()) {
-                    maleMatch++;
-                    if(mEntry.getGender() == test.getGender()) {
-                        maleMatch++;
-                    } else {
+                    if(mEntry.getGender() != test.getGender()) {
                         test.setGender(GenderOfName.NEUTRAL);
                     }
                 }
                 if(fEntry.getName() == test.getName()) {
-                    femaleMatch++;
-                    if(fEntry.getGender() == test.getGender()) {
-                        femaleMatch++;
-                    } else {
+                    if(fEntry.getGender() != test.getGender()) {
                         test.setGender(GenderOfName.NEUTRAL);
                     }
                 }
-            }
+            } mEntry.addData(pop1, year);
+            fEntry.addData(pop2, year);
+            input.close();
         }
     }
