@@ -13,9 +13,9 @@ public class BabyName {
     private ArrayList<Integer> birthCounts = new ArrayList<Integer>();
     private ArrayList<Integer> years = new ArrayList<Integer>();
 
-    public BabyName(String nameIn, GenderOfName genderIn) {
-        gender = genderIn;
-        name = nameIn;
+    public BabyName(String name, GenderOfName gender) {
+        this.gender = gender;
+        this.name = name;
     }
     public String getName() {
         return name;
