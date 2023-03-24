@@ -18,65 +18,77 @@ public class BabyNameDatabase {
         databaseFileName = fName;
         fileRecord = new File(databaseFileName);
     }
+
     public ArrayList<BabyName> getRecords() {
         return records;
     }
+
     /**
      * Reads the csv file that holds the baby name birth data and updates
      * the records variable.
+     *
      * @param filename name of the file to read from
      * @throws IOException could not find or close file
      */
     public void readRecordsFromBirthDataFile(String filename) throws IOException {
-        // TODO 2: Write the code below this line.
         Scanner in = new Scanner(new File(filename));
         int year = Integer.parseInt(filename.substring(filename.length() - 8, filename.length() - 4));
+        int count = 0;
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            if (line.matches("^\\d")) {
+            if (count >= 3 && line.matches("^\\d")) {
                 processLineFromBirthDataFile(line, year);
             }
+            count++;
         }
         in.close();
     }
-        /**
-         * Processes one formatted line of the csv file into baby names and
-         * adds/updates the records array.
-         * @param line the string holding the line from the csv file
-         * @param year when the data is from
-         */
-        public void processLineFromBirthDataFile(String line, int year) {
-            String[] fields = line.split("\\t");
-            String maleName = fields[1].trim();
-            String femaleName = fields[3].trim();
-            int maleCount = Integer.parseInt(fields[2].replaceAll(",", "").trim());
-            int femaleCount = Integer.parseInt(fields[4].replaceAll(",", "").trim());
 
-            BabyName mEntry = new BabyName(maleName, GenderOfName.MALE);
-            BabyName fEntry = new BabyName(femaleName, GenderOfName.FEMALE);
+    /**
+     * Processes one formatted line of the csv file into baby names and
+     * adds/updates the records array.
+     *
+     * @param line the string holding the line from the csv file
+     * @param year when the data is from
+     */
+    public void processLineFromBirthDataFile(String line, int year) {
+        String[] fields = line.split("(?<![0-9]),(?!\\d)");
 
-            for (BabyName test : records) {
-                if (mEntry.getName().equals(test.getName())) {
-                    if (!Objects.equals(mEntry.getGender(), test.getGender())) {
-                        test.setGender(GenderOfName.NEUTRAL);
-                    }
+        String maleName = fields[1].trim();
+        String femaleName = fields[3].trim();
+        int maleCount = Integer.parseInt(fields[2].replaceAll(",", "").trim());
+        int femaleCount = Integer.parseInt(fields[4].replaceAll(",", "").trim());
+
+        BabyName mEntry = new BabyName(maleName, GenderOfName.MALE);
+        BabyName fEntry = new BabyName(femaleName, GenderOfName.FEMALE);
+
+        boolean foundMEntry = false;
+        boolean foundFEntry = false;
+
+        for (BabyName test : records) {
+            if (mEntry.getName().equals(test.getName())) {
+                foundMEntry = true;
+                if (!Objects.equals(mEntry.getGender(), test.getGender())) {
+                    test.setGender(GenderOfName.NEUTRAL);
                 }
-                if (fEntry.getName().equals(test.getName())) {
-                    if (!Objects.equals(fEntry.getGender(), test.getGender())) {
-                        test.setGender(GenderOfName.NEUTRAL);
-                    }
+                test.addData(maleCount, year);
+            }
+            if (fEntry.getName().equals(test.getName())) {
+                foundFEntry = true;
+                if (!Objects.equals(fEntry.getGender(), test.getGender())) {
+                    test.setGender(GenderOfName.NEUTRAL);
                 }
-            }
-
-            mEntry.addData(maleCount, year);
-            fEntry.addData(femaleCount, year);
-
-            if (!records.contains(mEntry)) {
-                records.add(mEntry);
-            }
-            if (!records.contains(fEntry)) {
-                records.add(fEntry);
+                test.addData(femaleCount, year);
             }
         }
 
+        if (!foundMEntry) {
+            mEntry.addData(maleCount, year);
+            records.add(mEntry);
+        }
+        if (!foundFEntry) {
+            fEntry.addData(femaleCount, year);
+            records.add(fEntry);
+        }
+    }
 }
