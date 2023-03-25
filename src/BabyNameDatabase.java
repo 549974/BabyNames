@@ -62,31 +62,26 @@ public class BabyNameDatabase {
         BabyName mEntry = new BabyName(maleName, GenderOfName.MALE);
         BabyName fEntry = new BabyName(femaleName, GenderOfName.FEMALE);
 
-        boolean foundMEntry = false;
-        boolean foundFEntry = false;
-
         for (BabyName test : records) {
             if (mEntry.getName().equals(test.getName())) {
-                foundMEntry = true;
-                if (!Objects.equals(mEntry.getGender(), test.getGender())) {
+                if (!(Objects.equals(test.getGender(), mEntry.getGender()))) {
                     test.setGender(GenderOfName.NEUTRAL);
                 }
                 test.addData(maleCount, year);
             }
             if (fEntry.getName().equals(test.getName())) {
-                foundFEntry = true;
-                if (!Objects.equals(fEntry.getGender(), test.getGender())) {
+                if (!(Objects.equals(test.getGender(), fEntry.getGender()))) {
                     test.setGender(GenderOfName.NEUTRAL);
                 }
                 test.addData(femaleCount, year);
             }
         }
 
-        if (!foundMEntry) {
+        if (!records.contains(mEntry)) {
             mEntry.addData(maleCount, year);
             records.add(mEntry);
         }
-        if (!foundFEntry) {
+        if (!records.contains(fEntry)) {
             fEntry.addData(femaleCount, year);
             records.add(fEntry);
         }
