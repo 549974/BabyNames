@@ -52,6 +52,7 @@ public class BabyNameDatabase {
      * @param year when the data is from
      */
     public void processLineFromBirthDataFile(String line, int year) {
+        line = line.replaceAll("\"", "");
         String[] fields = line.split("(?<![0-9]),(?!\\d)");
 
         String maleName = fields[1].trim();
