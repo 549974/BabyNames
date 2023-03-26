@@ -1,7 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Scanner;
  */
 public class BabyNameDatabase {
     private String databaseFileName;
-    private ArrayList<BabyName> records = new ArrayList<BabyName>();
+    private ArrayList<BabyName> records = new ArrayList<>();
     private File fileRecord;
 
     public BabyNameDatabase(String fName) {
@@ -32,11 +32,11 @@ public class BabyNameDatabase {
      */
     public void readRecordsFromBirthDataFile(String filename) throws IOException {
         Scanner in = new Scanner(new File(filename));
-        int year = Integer.parseInt(filename.substring(filename.length() - 8, filename.length() - 4));
+        int year = Integer.parseInt(filename.substring(9, 13));
         int count = 0;
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            if (count >= 3 && line.matches("^\\d")) {
+            if (count > 2 && Character.isDigit(line.charAt(0))) {
                 processLineFromBirthDataFile(line, year);
             }
             count++;
@@ -53,38 +53,48 @@ public class BabyNameDatabase {
      */
     public void processLineFromBirthDataFile(String line, int year) {
         line = line.replaceAll("\"", "");
-        String[] fields = line.split("(?<![0-9]),(?!\\d)");
-
-        String maleName = fields[1].trim();
-        String femaleName = fields[3].trim();
-        int maleCount = Integer.parseInt(fields[2].replaceAll(",", "").trim());
-        int femaleCount = Integer.parseInt(fields[4].replaceAll(",", "").trim());
-
-        BabyName mEntry = new BabyName(maleName, GenderOfName.MALE);
-        BabyName fEntry = new BabyName(femaleName, GenderOfName.FEMALE);
-
-        for (BabyName test : records) {
-            if (mEntry.getName().equals(test.getName())) {
-                if (!(Objects.equals(test.getGender(), mEntry.getGender()))) {
-                    test.setGender(GenderOfName.NEUTRAL);
-                }
+        String[] fields = line.split(",");
+        ArrayList<String> par = new ArrayList<>(Arrays.asList(fields));
+        for(int f = 0; f < par.size(); f++) {
+            String x = par.get(f);
+            if(Character.isDigit(x.charAt(0)) && f != par.size()-1 && Character.isDigit(par.get(f+1).charAt(0))) {
+                par.set(f, par.get(f)+par.get(f+1));
+                par.remove(f+1);
+            }
+        }
+        String maleName = par.get(1);
+        int maleCount = Integer.parseInt(par.get(2));
+        String femaleName = par.get(3);
+        int femaleCount = Integer.parseInt(par.get(4));
+        BabyName mEntry = null;
+        BabyName fEntry = null;
+        boolean fFound = false;
+        boolean mFound = false;
+        for(BabyName test : records){
+            if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.FEMALE)) {
+                test.setGender(GenderOfName.NEUTRAL);
                 test.addData(maleCount, year);
-            }
-            if (fEntry.getName().equals(test.getName())) {
-                if (!(Objects.equals(test.getGender(), fEntry.getGender()))) {
-                    test.setGender(GenderOfName.NEUTRAL);
-                }
+                mFound = true;
+            } if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.MALE)) {
+                test.addData(maleCount, year);
+                mFound = true;
+            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.MALE)) {
+                test.setGender(GenderOfName.NEUTRAL);
                 test.addData(femaleCount, year);
+                fFound = true;
+            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.FEMALE)) {
+                test.addData(femaleCount, year);
+                fFound = true;
             }
         }
-
-        if (!records.contains(mEntry)) {
-            mEntry.addData(maleCount, year);
-            records.add(mEntry);
-        }
-        if (!records.contains(fEntry)) {
-            fEntry.addData(femaleCount, year);
+        if(!fFound) {
+            fEntry = new BabyName(femaleName, GenderOfName.FEMALE);
             records.add(fEntry);
+            fEntry.addData(femaleCount, year);
+        } if(!mFound) {
+            mEntry = new BabyName(maleName, GenderOfName.MALE);
+            records.add(mEntry);
+            mEntry.addData(maleCount, year);
         }
     }
 }
