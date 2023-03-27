@@ -46,7 +46,6 @@ public class BabyName {
             else if(year > min && year < max) {
                 if(years.contains(year)) {
                     index = years.indexOf(year);
-                    years.add(index, year);
                 } else {
                     for(int y : years) {
                         if(y < year) {

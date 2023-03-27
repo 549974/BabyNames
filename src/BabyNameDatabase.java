@@ -33,13 +33,11 @@ public class BabyNameDatabase {
     public void readRecordsFromBirthDataFile(String filename) throws IOException {
         Scanner in = new Scanner(new File(filename));
         int year = Integer.parseInt(filename.substring(9, 13));
-        int count = 0;
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            if (count > 2 && Character.isDigit(line.charAt(0))) {
+            if (Character.isDigit(line.charAt(0))) {
                 processLineFromBirthDataFile(line, year);
             }
-            count++;
         }
         in.close();
     }
@@ -66,8 +64,8 @@ public class BabyNameDatabase {
         int maleCount = Integer.parseInt(par.get(2));
         String femaleName = par.get(3);
         int femaleCount = Integer.parseInt(par.get(4));
-        BabyName mEntry = null;
-        BabyName fEntry = null;
+        BabyName mEntry;
+        BabyName fEntry;
         boolean fFound = false;
         boolean mFound = false;
         for(BabyName test : records){
@@ -75,14 +73,14 @@ public class BabyNameDatabase {
                 test.setGender(GenderOfName.NEUTRAL);
                 test.addData(maleCount, year);
                 mFound = true;
-            } if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.MALE)) {
+            } else if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.MALE)) {
                 test.addData(maleCount, year);
                 mFound = true;
             } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.MALE)) {
                 test.setGender(GenderOfName.NEUTRAL);
                 test.addData(femaleCount, year);
                 fFound = true;
-            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.FEMALE)) {
+            } else if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.FEMALE)) {
                 test.addData(femaleCount, year);
                 fFound = true;
             }
