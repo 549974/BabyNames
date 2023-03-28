@@ -7,7 +7,9 @@ import java.util.Scanner;
 /**
  * Manages the list of BabyNames as well as reading and writing to the files
  * with the BabyNames.
- * @author __________
+ * @author Jake Abendroth
+ * @version 1.0
+ * @since 2023-03-27
  */
 public class BabyNameDatabase {
     private String databaseFileName;
@@ -33,13 +35,11 @@ public class BabyNameDatabase {
     public void readRecordsFromBirthDataFile(String filename) throws IOException {
         Scanner in = new Scanner(new File(filename));
         int year = Integer.parseInt(filename.substring(9, 13));
-        int count = 0;
         while (in.hasNextLine()) {
             String line = in.nextLine();
-            if (count > 2 && Character.isDigit(line.charAt(0))) {
+            if (Character.isDigit(line.charAt(0))) {
                 processLineFromBirthDataFile(line, year);
             }
-            count++;
         }
         in.close();
     }
@@ -66,8 +66,8 @@ public class BabyNameDatabase {
         int maleCount = Integer.parseInt(par.get(2));
         String femaleName = par.get(3);
         int femaleCount = Integer.parseInt(par.get(4));
-        BabyName mEntry = null;
-        BabyName fEntry = null;
+        BabyName mEntry;
+        BabyName fEntry;
         boolean fFound = false;
         boolean mFound = false;
         for(BabyName test : records){

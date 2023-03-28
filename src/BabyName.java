@@ -64,9 +64,6 @@ public class BabyName {
             addData(namesnum.get(i), occur.get(i));
         }
     }
-    public int index(int y) {
-        return years.indexOf(y);
-    }
     /**
      * Formats the object as a String.
      * @return formatted String
