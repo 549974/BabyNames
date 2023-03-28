@@ -5,8 +5,6 @@ import java.io.IOException;
  * @author Mr. Turner
  */
 public class BabyNameTester {
-
-
     public static void main(String[] args) {
         BabyNameDatabase p1 = new BabyNameDatabase("nofile.txt");
         try{
