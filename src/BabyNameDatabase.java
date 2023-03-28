@@ -71,18 +71,18 @@ public class BabyNameDatabase {
         boolean fFound = false;
         boolean mFound = false;
         for(BabyName test : records){
-            if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.FEMALE)) {
+            if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.FEMALE.name())) {
                 test.setGender(GenderOfName.NEUTRAL);
                 test.addData(maleCount, year);
                 mFound = true;
-            } if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.MALE)) {
+            } if(test.getName().equals(maleName) && test.getGender().equals(GenderOfName.MALE.name())) {
                 test.addData(maleCount, year);
                 mFound = true;
-            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.MALE)) {
+            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.MALE.name())) {
                 test.setGender(GenderOfName.NEUTRAL);
                 test.addData(femaleCount, year);
                 fFound = true;
-            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.FEMALE)) {
+            } if(test.getName().equals(femaleName) && test.getGender().equals(GenderOfName.FEMALE.name())) {
                 test.addData(femaleCount, year);
                 fFound = true;
             }

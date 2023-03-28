@@ -18,7 +18,7 @@ public class BabyNameTester {
         }
         int count = 0;
         for(BabyName name : p1.getRecords()){
-            if (name.getGender().equals(GenderOfName.NEUTRAL)){
+            if (name.getGender().equals(GenderOfName.NEUTRAL.name())){
                 System.out.println(name);
                 count++;
             }
